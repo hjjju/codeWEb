@@ -18,10 +18,8 @@ import lombok.extern.log4j.Log4j;
 @RunWith(SpringJUnit4ClassRunner.class)
 //Test for Controller
 @WebAppConfiguration
-@ContextConfiguration({
-	"file:src/main/webapp/WEB-INF/spring/root-context.xml",
-	"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml"
-})
+@ContextConfiguration({ "file:src/main/webapp/WEB-INF/spring/root-context.xml",
+		"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml" })
 //JavaConfig
 //@ContextConfiguration(classes= {
 //		org.zerock.config.RootConfig.class,
@@ -30,24 +28,25 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class BoardControllerTests {
 
-	@Setter(onMethod_= {@Autowired})
+	@Setter(onMethod_ = { @Autowired })
 	private WebApplicationContext ctx;
-	
+
 	private MockMvc mockMvc;
-	
+
 	@Before
 	public void setup() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx).build();
 	}
 
-	
-	
-	/*
-	 * @Test public void testList() throws Exception { log.info(
-	 * mockMvc.perform(MockMvcRequestBuilders.get("/board/list")) .andReturn()
-	 * .getModelAndView() .getModelMap() ); }
-	 */
-	
+//	@Test
+//	public void testList() throws Exception {
+//		log.info(
+//				mockMvc.perform(MockMvcRequestBuilders.get("/board/list"))
+//				.andReturn()
+//				.getModelAndView()
+//				.getModelMap());
+//	}
+
 	/*
 	 * @Test public void testRegister() throws Exception { String resultPage =
 	 * mockMvc.perform(MockMvcRequestBuilders.post("/board/register")
@@ -55,7 +54,7 @@ public class BoardControllerTests {
 	 * "user00") ).andReturn().getModelAndView().getViewName();
 	 * log.info(resultPage); }
 	 */
-	
+
 	/*
 	 * @Test public void tetGet()throws Exception{
 	 * 
@@ -73,13 +72,22 @@ public class BoardControllerTests {
 	 * 
 	 * log.info(resultPage); }
 	 */
+
+	@Test
+	public void testRemove() throws Exception {
+		// 삭제전 데이터베이스에 게시물 번호 확인 할것.
+		String resultPage = mockMvc.perform(MockMvcRequestBuilders.post("/board/remove").param("bno", "25")).andReturn()
+				.getModelAndView().getViewName();
+		log.info(resultPage);
+	}
+	
 	
 	@Test
-	public void testRemove()throws Exception{
-		//삭제전 데이터베이스에 게시물 번호 확인 할것.
-		String resultPage =mockMvc.perform(MockMvcRequestBuilders.post("/board/remove")
-				.param("bno", "25")
-				).andReturn().getModelAndView().getViewName();
-		log.info(resultPage);
+	public void testListPaging()throws Exception{
+		
+		log.info(mockMvc.perform(MockMvcRequestBuilders.get("/board/list")
+				.param("pageNum", "2")
+				.param("amount","50"))
+				.andReturn().getModelAndView().getModelMap());
 	}
 }
